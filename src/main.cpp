@@ -145,14 +145,17 @@ int main(int argc, char const *argv[]) {
             new_RGB(i, j, 0, 1) = green_resampled(i, j, 0);
             new_RGB(i, j, 0, 2) = img_read(i, j, 0, 2);
             // YCbCr
+            // float r = Y(i, j, 0) + 1.402 * (Cr_resampled(i, j, 0) - 128);
+            // float g = Y(i, j, 0) - 0.34414 * (Cb_resampled(i, j, 0) - 128) - 0.71414 * (Cr_resampled(i, j, 0) - 128);
+            // float b = Y(i, j, 0) + 1.772 * (Cb_resampled(i, j, 0) - 128);
             YCbCr(i, j, 0, 0) = Y(i, j, 0);
             YCbCr(i, j, 0, 1) = Cb_resampled(i, j, 0);
             YCbCr(i, j, 0, 2) = Cr_resampled(i, j, 0);
         }
     }
     // new_RGB.save_png("../img/new_RGB.png");
-    // YCbCr.save_png("../img/YCbCr.png");
-    // YCbCr.get_RGBtoYCbCr().save_png("png_test.png");
+    YCbCr.save_png("../img/YCbCr.png");
+    YCbCr.get_RGBtoYCbCr().save_png("png_test.png");
 
     double psnr_rgb = psnr(img_read, new_RGB);
     double psnr_ycbcr = psnr(img_read, YCbCr);
