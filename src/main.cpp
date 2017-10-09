@@ -123,16 +123,16 @@ int main(int argc, char const *argv[]) {
         }
     }
 
-    // red.save_png("../img/halfRedChannel.png");
-    // green.save_png("../img/halfGreenChannel.png");
-    // red_resampled.save_png("../img/red_resampled.png");
-    // green_resampled.save_png("../img/green_resampled.png");
+    red.save_png("../img/halfRedChannel.png");
+    green.save_png("../img/halfGreenChannel.png");
+    red_resampled.save_png("../img/red_resampled.png");
+    green_resampled.save_png("../img/green_resampled.png");
 
-    // Y.save_png("../img/Y.png");
-    // Cb.save_png("../img/Cb.png");
-    // Cr.save_png("../img/Cr.png");
-    // Cb_resampled.save_png("../img/Cb_resampled.png");
-    // Cr_resampled.save_png("../img/Cr_resampled.png");
+    Y.save_png("../img/Y.png");
+    Cb.save_png("../img/Cb.png");
+    Cr.save_png("../img/Cr.png");
+    Cb_resampled.save_png("../img/Cb_resampled.png");
+    Cr_resampled.save_png("../img/Cr_resampled.png");
 
 
     CImg<> new_RGB(width, height, 1, 3);
@@ -153,9 +153,9 @@ int main(int argc, char const *argv[]) {
             YCbCr(i, j, 0, 2) = Cr_resampled(i, j, 0);
         }
     }
-    // new_RGB.save_png("../img/new_RGB.png");
+    new_RGB.save_png("../img/new_RGB.png");
     YCbCr.save_png("../img/YCbCr.png");
-    YCbCr.get_RGBtoYCbCr().save_png("png_test.png");
+//    YCbCr.get_RGBtoYCbCr().save_png("png_test.png");
 
     double psnr_rgb = psnr(img_read, new_RGB);
     double psnr_ycbcr = psnr(img_read, YCbCr);
