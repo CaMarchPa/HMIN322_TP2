@@ -35,24 +35,28 @@ int main(int argc, char const *argv[]) {
     CImg<> Cr(half_width, half_height, 1, 1);
     CImg<> Cb_resampled(width, height, 1, 1);
     CImg<> Cr_resampled(width, height, 1, 1);
-
-    // for (int j = 0; j < half_height; j++) {
-    //     for (int i = 0; i < half_width; i++) {
-    //         red(i, j, 0) = img_read(i*2, j*2, 0, 0);
-    //         green(i, j, 0) = img_read(i*2, j*2, 0, 1);
-    //     }
-    // }
+	float ** tab_cb;
+	float ** tab_cr;
+	
+	tab_cb = (float**) malloc(sizeof(float) * half_width);
+	tab_cr = (float**) malloc(sizeof(float) * half_width);
+	
+	for (int i = 0; i < half_width; i++) {
+		tab_cb[i] = (float*) malloc(sizeof(float) * half_height);
+		tab_cr[i] = (float*) malloc(sizeof(float) * half_height);
+	}
 
     // YCbCr
     for (int j = 0; j < height; j++) {
         for (int i = 0; i < width; i++) {
-            Y(i, j, 0) = 0.299 * img_read(i, j, 0, 0) + 0.587 * img_read(i, j, 0, 1) + 0.114 * img_read(i, j, 2);
+            Y(i, j, 0) = 0.3 * img_read(i, j, 0, 0) + 0.6 * img_read(i, j, 0, 1) + 0.1 * img_read(i, j, 2);
             if (j < half_height && i < half_width) {
                 //Red Green
                 red(i, j, 0) = img_read(i*2, j*2, 0, 0);
                 green(i, j, 0) = img_read(i*2, j*2, 0, 1);
                 //Cb Cr
                 Cb(i, j, 0) = -0.1687 * img_read(i*2, j*2, 0, 0) - 0.3313 * img_read(i*2, j*2, 0, 1) + 0.5 * img_read(i*2, j*2, 0, 2) + 128;
+                //tab_
                 Cr(i, j, 0) = 0.5 * img_read(i*2, j*2, 0, 0) - 0.4187 * img_read(i*2, j*2, 0, 1) - 0.0813 * img_read(i*2, j*2, 0, 2) + 128;
             }
         }
@@ -160,8 +164,7 @@ int main(int argc, char const *argv[]) {
     double psnr_rgb = psnr(img_read, new_RGB);
     double psnr_ycbcr = psnr(img_read, YCbCr);
     std::cout << "The PSNR of original image and the resampled rgb = " << psnr_rgb << '\n';
-    std::cout << "The PSNR of original image and the resampled rgb = " << psnr_ycbcr << '\n';
-
+    std::cout << "The PSNR of original image and the resampled YCb = " << psnr_ycbcr << '\n';
 
     return 0;
 }
