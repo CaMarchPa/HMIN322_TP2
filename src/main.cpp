@@ -1,8 +1,6 @@
 #include "CImg.h"
 #include <iostream>
 
-extern float const EPSILON = 0.0001;
-
 using namespace cimg_library;
 
 int setColor(int r, int g, int b);
@@ -35,16 +33,6 @@ int main(int argc, char const *argv[]) {
     CImg<> Cr(half_width, half_height, 1, 1);
     CImg<> Cb_resampled(width, height, 1, 1);
     CImg<> Cr_resampled(width, height, 1, 1);
-	float ** tab_cb;
-	float ** tab_cr;
-	
-	tab_cb = (float**) malloc(sizeof(float) * half_width);
-	tab_cr = (float**) malloc(sizeof(float) * half_width);
-	
-	for (int i = 0; i < half_width; i++) {
-		tab_cb[i] = (float*) malloc(sizeof(float) * half_height);
-		tab_cr[i] = (float*) malloc(sizeof(float) * half_height);
-	}
 
     // YCbCr
     for (int j = 0; j < height; j++) {
@@ -149,12 +137,12 @@ int main(int argc, char const *argv[]) {
             new_RGB(i, j, 0, 1) = green_resampled(i, j, 0);
             new_RGB(i, j, 0, 2) = img_read(i, j, 0, 2);
             // YCbCr
-            // float r = Y(i, j, 0) + 1.402 * (Cr_resampled(i, j, 0) - 128);
-            // float g = Y(i, j, 0) - 0.34414 * (Cb_resampled(i, j, 0) - 128) - 0.71414 * (Cr_resampled(i, j, 0) - 128);
-            // float b = Y(i, j, 0) + 1.772 * (Cb_resampled(i, j, 0) - 128);
-            YCbCr(i, j, 0, 0) = Y(i, j, 0);
-            YCbCr(i, j, 0, 1) = Cb_resampled(i, j, 0);
-            YCbCr(i, j, 0, 2) = Cr_resampled(i, j, 0);
+            float r = abs(Y(i, j, 0) + 1.402 * (Cr_resampled(i, j, 0)));
+            float g = Y(i, j, 0) - 0.34414 * (Cb_resampled(i, j, 0) - 128) - 0.71414 * (Cr_resampled(i, j, 0) - 128);
+            float b = Y(i, j, 0) + 1.772 * (Cb_resampled(i, j, 0) - 128);
+            YCbCr(i, j, 0, 0) = r; //Y(i, j, 0);
+            YCbCr(i, j, 0, 1) = g; //Cr_resampled(i, j, 0);
+            YCbCr(i, j, 0, 2) = b; //Cb_resampled(i, j, 0);
         }
     }
     new_RGB.save_png("../img/new_RGB.png");

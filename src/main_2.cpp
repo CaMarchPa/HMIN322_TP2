@@ -2,7 +2,7 @@
 #include <math.h>
 #include "ImageBase.h"
 
-float psnr(ImageBase img_o, ImageBase img_e);
+float PSNR(ImageBase img_o, ImageBase img_e);
 
 int main(int argc, char const *argv[]) {
     char inImgName[250];
@@ -90,7 +90,7 @@ int main(int argc, char const *argv[]) {
     }
 
     // Y.save("../img/Y_prime.pgm");
-    Cb.save("../img/Cb_prime.pgm");
+    // Cb.save("../img/Cb_prime.pgm");
     // Cr_resampled.save("../img/Cr_res.pgm");
     // Cr.save("../img/Cr_prime.pgm");
     // Cb_resampled.save("../img/Cb_res.pgm");
@@ -104,6 +104,36 @@ int main(int argc, char const *argv[]) {
             out[j*3][i*3+2] = Y[j][i] + 1.772 * (Cb_resampled[j][i] - 128);
         }
     }
-    out.save("../img/out_ycbcr.ppm");
+    // out.save("../img/out_ycbcr.ppm");
+    float psnr = PSNR(img, out);
+    // std::cout << "The PSNR of original image and the resampled and YCbCr reconstructed image : " << psnr << '\n';
     return 0;
+}
+
+float PSNR(ImageBase img_o, ImageBase img_e) {
+    int height = img_e.getHeight();
+    int width = img_e.getWidth();
+
+    float eqm = 0.0;
+    float eqm_r = 0.0, eqm_g = 0.0, eqm_b = 0.0;
+
+	for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width; i++) {
+            float r = img_o[j*3][i*3+0] - img_e[j*3][i*3+0];
+            float g = img_o[j*3][i*3+1] - img_e[j*3][i*3+1];
+            float b = img_o[j*3][i*3+2] - img_e[j*3][i*3+2];
+            eqm_r += pow(r, 2);
+            eqm_g += pow(g, 2);
+            eqm_b += pow(b, 2);
+		}
+	}
+
+    int d = 255;
+	eqm_r /= height*width;
+    eqm_g /= height*width;
+    eqm_b /= height*width;
+    eqm = (eqm_r + eqm_g + eqm_b) / 3;
+    float psnr = 10 * log10(pow(d, 2) / eqm);
+    
+	return psnr;
 }
